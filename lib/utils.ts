@@ -1,4 +1,10 @@
 import { _siteDetails } from "./config";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function _formatNumberToMoney(number: number) {
   return Intl.NumberFormat("en-US").format(number);

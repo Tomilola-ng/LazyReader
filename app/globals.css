@@ -80,7 +80,10 @@
     @apply bg-primary text-white;
   }
   .button {
-    @apply rounded px-4 py-2 hover:brightness-125;
+    @apply rounded-full textBg flexCenter gap-x-2 w-fit px-4 py-2 transition-all text-sm;
+  }
+  .linkButton {
+    @apply button underline decoration-transparent hover:decoration-white;
   }
   .flexBetween {
     @apply flex justify-between items-center;

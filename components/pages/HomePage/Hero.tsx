@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SparklesIcon } from "lucide-react";
 
 import Gap from "@/components/Reusables/Gap";
-import { buttonVariants } from "@/components/ui/button";
+import Image from "next/image";
 
 export default function HeroSection() {
   return (
@@ -22,13 +22,19 @@ export default function HeroSection() {
       <Gap height={4} />
       <Link
         href="/dashboard"
-        className={`${buttonVariants({
-          variant: "default",
-        })} animate-in fade-in slide-in-from-bottom-6 duration-500`}
+        className={`linkButton animate-in fade-in slide-in-from-bottom-6 duration-500`}
       >
-        <SparklesIcon className="mr-2 h-4 w-4" />
+        <SparklesIcon className="h-4 w-4" />
         Get Started
       </Link>
+      <Gap height={10} />
+      <Image
+        src="/hero-img.webp"
+        alt="Hero Image"
+        width={600}
+        height={500}
+        sizes="(max-width: 1200px) 600px, 400px"
+      />
     </section>
   );
 }

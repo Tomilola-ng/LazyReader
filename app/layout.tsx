@@ -3,11 +3,13 @@ import { Inter } from "next/font/google";
 
 import "./globals.css";
 
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import { _siteDetails } from "@/lib/config";
+import { Providers } from "./providers";
 
-const myFont = Inter({ subsets: ["latin"] });
+const myFont = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: _siteDetails.name,
@@ -20,11 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${myFont.className} bg-slate-100 hide-scrollbar`}>
-        <Header />
-        {children}
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${myFont.className} hide-scrollbar`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -1,10 +1,10 @@
 export const _siteDetails = {
-  name: "Site Name",
-  domain: "site-name.com",
-  desc: "Site Description",
+  name: "Lazy Reader",
+  domain: "lazyreader.vercel.app",
+  desc: "Get audio summary of any eBook",
   menuLinks: [
-    { label: "Link 1", link: "#link-1" },
-    { label: "Link 2", link: "#link-2" },
-    { label: "Link 3", link: "#link-3", extra: true },
+    { label: "FAQs", link: "#faqs" },
+    { label: "How it works", link: "#how-it-works" },
+    { label: "Sign In", link: "/login", extra: true },
   ],
 };

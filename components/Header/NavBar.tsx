@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { _siteDetails } from "@/lib/config";
+import { LINKEDIN_ICON } from "../Reusables/Icons";
 
 export const Navbar = () => {
   return (
@@ -16,6 +17,12 @@ export const Navbar = () => {
           {item.label}
         </Link>
       ))}
+      <Link
+        href={"/"}
+        className="py-3 pl-4 border-b hover:textBg transition-all flexBetween"
+      >
+        LinkedIn <LINKEDIN_ICON />
+      </Link>
     </motion.div>
   );
 };

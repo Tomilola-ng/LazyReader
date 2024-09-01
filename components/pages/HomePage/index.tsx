@@ -1,7 +1,10 @@
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 import HeroSection from "./Hero";
 import FeaturesSection from "./Features";
+import AreYouReady from "./AreYouReady";
+import FAQs from "./FAQs";
 
 export default function HomePage() {
   return (
@@ -9,6 +12,9 @@ export default function HomePage() {
       <Header />
       <HeroSection />
       <FeaturesSection />
+      <FAQs />
+      <AreYouReady />
+      <Footer />
     </>
   );
 }

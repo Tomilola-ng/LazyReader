@@ -11,11 +11,11 @@ export default function HeroSection() {
       role="group"
       className="maxContainer flexCenter flex-col py-20 pSm"
     >
-      <h1 className="font-black md:text-5xl text-4xl tracking-tighter">
+      <h1 className="font-black md:text-5xl text-4xl tracking-tighter text-center">
         Get audio summary of any eBook
       </h1>
       <Gap height={4} />
-      <p className="text-neutral-800 dark:text-neutral-200 text-lg md:text-xl">
+      <p className="text-neutral-800 dark:text-neutral-200 text-lg md:text-xl text-center">
         Transform your reading experience with concise summaries and audio
         read-aloud features.
       </p>

@@ -21,11 +21,10 @@ export default function Header() {
       <header className="h-16 pSm py-3 border-b border-primary bg-light w-full flexBetween z-10">
         <Logo />
 
-        <AlignLeftIcon
-          onClick={toggleOpen}
-          className="text-primary md:hidden"
-          size={28}
-        />
+        <div className="md:hidden flexBetween w-fit gap-x-2">
+          <AlignLeftIcon onClick={toggleOpen} />
+          <ThemeSwitch />
+        </div>
 
         <div className="w-[20rem] hidden md:flexBetween">
           {_siteDetails.menuLinks.map((item) => (

@@ -1,7 +1,7 @@
-export default function DashboardPage() {
+export default function LoginPage() {
   return (
     <main role="main" className="grid grid-cols-2 min-w-[1100px]">
-      <section>Dashboard Screen</section>
+      <section>Login Screen</section>
     </main>
   );
 }

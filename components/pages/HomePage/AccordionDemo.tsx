@@ -66,7 +66,7 @@ export function AccordionDemo() {
       {faqs.map((faq, index) => (
         <AccordionItem key={index} value={`item-${index}`}>
           <AccordionTrigger>{faq.question}</AccordionTrigger>
-          <AccordionContent>{faq.question}</AccordionContent>
+          <AccordionContent>{faq.answer}</AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

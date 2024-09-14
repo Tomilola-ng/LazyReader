@@ -3,8 +3,8 @@ export const _siteDetails = {
   domain: "lazyreader.vercel.app",
   desc: "Get audio summary of any eBook",
   menuLinks: [
-    { label: "FAQs", link: "#faqs" },
-    { label: "How it works", link: "#how-it-works" },
+    { label: "FAQs", link: "/faqs" },
+    { label: "How it works", link: "/#how-it-works" },
     { label: "Sign In", link: "/login", extra: true },
   ],
 };

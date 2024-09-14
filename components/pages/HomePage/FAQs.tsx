@@ -1,5 +1,5 @@
 import Gap from "@/components/Reusables/Gap";
-import { AccordionDemo } from "./AccordionDemo";
+import { FAQList } from "../../Reusables/FAQList";
 
 export default function FAQs() {
   return (
@@ -14,7 +14,7 @@ export default function FAQs() {
       <Gap height={10} />
 
       <div className="flexBetween flex-wrap max-w-screen-sm w-full">
-        <AccordionDemo />
+        <FAQList />
       </div>
     </main>
   );

@@ -1,11 +1,13 @@
-/* eslint-disable react/no-unescaped-entities */
 import Gap from "@/components/Reusables/Gap";
-import { UploadCloudIcon } from "lucide-react";
 import HowItWorksSection from "./HowItWorks";
 
 export default function FeaturesSection() {
   return (
-    <section role="group" className="textBg flexCenter flex-col py-20 pSm">
+    <section
+      role="group"
+      id="how-it-works"
+      className="textBg flexCenter flex-col py-20 pSm"
+    >
       <div className="flexCenter flex-col max-w-screen-sm text-center">
         <h2 className="font-bold text-3xl md:text-4xl tracking-tight">
           Struggling to Find Time to Read?

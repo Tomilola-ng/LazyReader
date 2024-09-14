@@ -6,10 +6,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import FileInputArea from "./FileInputArea";
+import SummaryArea from "./SummaryArea";
+import Header from "@/components/Header";
 
 export default function DashboardPage() {
   const [fileData, setFileData] = useState<File>();
   const [summaryData, setSummaryData] = useState<string>("");
+  const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -17,40 +20,37 @@ export default function DashboardPage() {
     const fetchData = async () => {
       try {
         if (!fileData) {
-          console.error("No file data available");
+          setError("No file data available");
           return;
         }
 
-        // Create a FormData object and append the file if it's defined
         const formData = new FormData();
-        formData.append("file", fileData); // fileData is now guaranteed to be a File
+        formData.append("file", fileData);
 
-        // Make the API call to upload the file and get the summary
         const response = await fetch("/api/summarize", {
           method: "POST",
           body: formData,
         });
 
-        // Parse the JSON response
         const data = await response.json();
-        console.log("data", data);
 
-        // Set the summary data in your state
-        setSummaryData(data.summary);
-      } catch (error) {
-        // Handle any errors during the API request
-        console.error("Error fetching data:", error);
+        if (data.status == 200) {
+          setSummaryData(data.summary);
+          setAudioUrl(data.audiUrl || "/");
+        } else {
+          setError(data.summary);
+        }
+      } catch (error: any) {
+        setError("Error fetching data");
       } finally {
         setLoading(false);
       }
     };
 
-    // Only call the API if fileData is available
     if (fileData) {
       fetchData();
     }
   }, [fileData]);
-
 
   useEffect(() => {
     if (!error) return;
@@ -83,17 +83,16 @@ export default function DashboardPage() {
   return (
     <>
       <ToastContainer />
-      <main role="main" className="grid grid-cols-2 min-w-[1100px] h-screen">
+      <Header />
+      <main
+        role="main"
+        className="grid grid-cols-2 min-w-[1100px] h-[calc(100dvh-4rem)]"
+      >
         <FileInputArea
           handleFileUpload={handleFileUpload}
           setError={setError}
         />
-        <div>
-          <div className="flex flex-col gap-4 p-4">
-            <h1 className="text-3xl font-bold">Summary</h1>
-            <p className="text-lg">{summaryData}</p>
-          </div>
-        </div>
+        <SummaryArea summaryData={summaryData} audioUrl={audioUrl} />
       </main>
     </>
   );

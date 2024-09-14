@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export function AccordionDemo() {
+export function FAQList() {
   const faqs = [
     {
       question: "What is Lazy Reader?",

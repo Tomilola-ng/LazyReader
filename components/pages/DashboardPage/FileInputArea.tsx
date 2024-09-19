@@ -51,7 +51,7 @@ export default function FileInputArea({
   });
 
   return (
-    <section className="w-full md:h-[100%] flexCenter bg-neutral-100 dark:bg-neutral-800 p-4 gap-4">
+    <section className="w-full md:h-[100%] flexCenter p-4 gap-4">
       <div
         {...getRootProps()}
         className={`flex-1 border-2 border-dashed rounded-lg flexCenter transition-colors h-full ${

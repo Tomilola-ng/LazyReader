@@ -46,7 +46,6 @@ export default function HowItWorksSection() {
   return (
     <section
       role="group"
-      id="how-it-works"
       className="flexBetween rounded p-6 md:py-8 bg-white text-neutral-800 flex-col w-full max-w-screen-lg text-center"
     >
       <h2 className="font-bold text-3xl md:text-4xl tracking-tight">

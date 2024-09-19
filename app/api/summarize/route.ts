@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const formData = await req.formData();
-    const file = formData.get("file") as File; // Extracting the file from the formData
+    const file = formData.get("file") as File;
 
     if (!file) {
       return NextResponse.json(
@@ -26,10 +26,9 @@ export async function POST(req: NextRequest) {
     }
     const fileBlob = new Blob([await file.arrayBuffer()], { type: file.type });
 
-    // Create the file upload request
     const fileResponse = await openai.files.create({
       file: new File([fileBlob], file.name, { type: file.type }),
-      purpose: "assistants", // Specify the purpose of the file
+      purpose: "assistants",
     });
 
     const completionResponse = await openai.chat.completions.create({
@@ -62,13 +61,8 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error(
-      "=============================================",
-      "Error processing request:",
-      error
-    );
     return NextResponse.json(
-      { error: "An error occurred while processing your request" },
+      { message: "An error occurred while processing your request" },
       { status: 500 }
     );
   }

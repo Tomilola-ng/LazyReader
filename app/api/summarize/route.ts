@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
+import fs from "fs";
+import path from "path";
 
-import OpenAI from "openai";
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
+const fileManager = new GoogleAIFileManager(
+  process.env.GEMINI_API_KEY as string
+);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,51 +24,64 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!file) {
-      return NextResponse.json(
-        { message: "No file was uploaded." },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        message: "No file was uploaded.",
+        status: 400,
+      });
     }
-    const fileBlob = new Blob([await file.arrayBuffer()], { type: file.type });
 
-    const fileResponse = await openai.files.create({
-      file: new File([fileBlob], file.name, { type: file.type }),
-      purpose: "assistants",
+    const filePath = path.join(process.cwd(), "tmp", file.name);
+
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    fs.writeFileSync(filePath, buffer);
+
+    const uploadResponse = await fileManager.uploadFile(filePath, {
+      mimeType: file.type,
+      displayName: file.name,
     });
 
-    const completionResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a helpful assistant that summarizes ebooks.",
-        },
-        {
-          role: "user",
-          content:
-            "Please summarize the following ebook content based on its headings. Provide the summary in markdown format.",
-        },
-        {
-          role: "user",
-          content: `Please summarize the content of the file with ID: ${fileResponse.id}`,
-        },
-      ],
-    });
+    if (!uploadResponse.file) {
+      return NextResponse.json({
+        message: "Failed to upload file.",
+        status: 500,
+      });
+    }
 
-    const summary = completionResponse;
-    console.log("Summary:", summary);
-
-    return NextResponse.json(
+    const result = await model.generateContent([
       {
-        message: "File summarized successfully.",
-        summary,
+        fileData: {
+          mimeType: uploadResponse.file.mimeType,
+          fileUri: uploadResponse.file.uri,
+        },
       },
-      { status: 200 }
-    );
+      { text: "Can you give a detailed summary of this ebook?" },
+    ]);
+
+    const summary = result.response.text();
+
+    if (!summary) {
+      return NextResponse.json({
+        message: "Failed to generate summary.",
+        status: 500,
+      });
+    }
+
+    // Remove the file after use
+    // fs.unlinkSync(filePath);
+
+    return NextResponse.json({
+      message: "File summarized successfully.",
+      summary,
+      status: 200,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { message: "An error occurred while processing your request" },
-      { status: 500 }
-    );
+    console.error("Error in API route:", error);
+    return NextResponse.json({
+      message: "An error occurred while processing your request",
+      error: error instanceof Error ? error.message : String(error),
+      status: 500,
+    });
   }
 }

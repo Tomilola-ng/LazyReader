@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import FileInputArea from "./FileInputArea";
 import SummaryArea from "./SummaryArea";
 import Header from "@/components/Header";
+import Loader from "@/components/Reusables/Loader";
 
 export default function DashboardPage() {
   const [fileData, setFileData] = useState<File>();
@@ -39,7 +40,7 @@ export default function DashboardPage() {
       } else {
         setError(data.message);
       }
-  
+
       setLoading(false);
     };
 
@@ -75,6 +76,8 @@ export default function DashboardPage() {
 
     return;
   };
+
+  if (loading) return <Loader />;
 
   return (
     <>

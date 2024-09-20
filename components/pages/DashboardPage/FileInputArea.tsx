@@ -16,10 +16,10 @@ export default function FileInputArea({
       if (fileRejections.length > 0) {
         const errorMessages = fileRejections.map((rejection) => {
           if (rejection.errors[0].code === "file-too-large") {
-            return "File is too large. Please upload a file smaller than 10MB.";
+            return "File is too large. Please upload a file smaller than 20MB.";
           }
           if (rejection.errors[0].code === "file-invalid-type") {
-            return "File type not supported. Please upload an ebook file (epub, pdf, doc, docx, txt, md, mobi, azw, azw3).";
+            return "File type not supported. Please upload an ebook file (pdf).";
           }
           return rejection.errors[0].message;
         });
@@ -36,18 +36,18 @@ export default function FileInputArea({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "application/epub+zip": [".epub"],
+      // "application/epub+zip": [".epub"],
       "application/pdf": [".pdf"],
-      "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
-      "text/plain": [".txt", ".md"],
-      "application/x-mobipocket-ebook": [".mobi"],
-      "application/vnd.amazon.ebook": [".azw", ".azw3"],
+      // "application/msword": [".doc"],
+      // "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+      //   [".docx"],
+      // "text/plain": [".txt", ".md"],
+      // "application/x-mobipocket-ebook": [".mobi"],
+      // "application/vnd.amazon.ebook": [".azw", ".azw3"],
     },
     maxFiles: 1,
     multiple: false,
-    maxSize: 10 * 1024 * 1024, // 10MB max file size
+    maxSize: 20 * 1024 * 1024, // 10MB max file size
   });
 
   return (

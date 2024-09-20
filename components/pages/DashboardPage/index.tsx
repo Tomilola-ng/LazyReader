@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import FileInputArea from "./FileInputArea";
 import SummaryArea from "./SummaryArea";
 import Header from "@/components/Header";
+import Loader from "@/components/Reusables/Loader";
 
 export default function DashboardPage() {
   const [fileData, setFileData] = useState<File>();
@@ -18,33 +19,29 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        if (!fileData) {
-          setError("No file data available");
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", fileData);
-
-        const response = await fetch("/api/summarize", {
-          method: "POST",
-          body: formData,
-        });
-
-        const data = await response.json();
-
-        if (data.status == 200) {
-          setSummaryData(data.summary);
-          setAudioUrl(data.audiUrl || "/");
-        } else {
-          setError(data.summary);
-        }
-      } catch (error: any) {
-        setError("Error fetching data");
-      } finally {
-        setLoading(false);
+      if (!fileData) {
+        setError("No file data available");
+        return;
       }
+
+      const formData = new FormData();
+      formData.append("file", fileData);
+
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.status == 200) {
+        setSummaryData(data.summary);
+        setAudioUrl("/");
+      } else {
+        setError(data.message);
+      }
+
+      setLoading(false);
     };
 
     if (fileData) {
@@ -79,6 +76,8 @@ export default function DashboardPage() {
 
     return;
   };
+
+  if (loading) return <Loader />;
 
   return (
     <>

@@ -1,32 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { _api } from "./types/api";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export async function middleware(req: NextRequest) {
-  const accessToken = req.cookies.get("access_cookie")?.value;
-
-  const authResponse: _api["getAuth"] = () => {
-    // Run your authentication logic here
-    return {
-      status: 200,
-      body: {
-        accessToken: accessToken,
-      },
-    };
-  };
-
-  if (authResponse()) {
-    return NextResponse.next();
-  } else {
-    return NextResponse.redirect(new URL("/login?NotLoggedIn=True", req.url));
-  }
-}
+export default clerkMiddleware();
 
 export const config = {
   matcher: [
-    "/admin",
-    "/dashboard",
-    "/dashboard/:path*",
-    "/super-admin",
-    "/super-admin/:path*",
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };

@@ -97,10 +97,6 @@ export default function DashboardPage() {
     setError("");
   }, [error]);
 
-  useEffect(() => {
-    handleGetAudio();
-  }, []);
-
   if (loading) return <Loader />;
 
   return (

@@ -15,7 +15,9 @@ export default function SummaryArea({
     <section className="p-4 w-full overflow-hdden relative">
       <h2 className="text-2xl font-bold mb-4">Your Summary</h2>
       <ScrollArea className="mb-4 max-h-[calc(100dvh-10rem)] overflow-y-scroll hide-scrollbar">
-        <ReactMarkdown className={"prose dark:"}>{summaryData}</ReactMarkdown>
+        <ReactMarkdown className={"prose dark:prose-invert"}>
+          {summaryData}
+        </ReactMarkdown>
       </ScrollArea>
 
       <AudioPlayer audioUrl={audioUrl} />

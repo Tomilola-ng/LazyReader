@@ -17,6 +17,42 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
+  const handleFileUpload = async (acceptedFiles: File[]): Promise<void> => {
+    /**
+     * Handle file upload
+     * Accepted files is an array of files
+     * Get the first file from the array and set it to the fileData state
+     * Set the loading state to true
+     * Return
+     */
+
+    const file = acceptedFiles[0];
+
+    setFileData(file);
+    setLoading(true);
+
+    return;
+  };
+
+  const handleGetAudio = async (summary?: string) => {
+    const formData = new FormData();
+    formData.append("text", summary ?? summaryData);
+
+    const response = await fetch("/api/speech", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      setAudioUrl(audioUrl);
+    } else {
+      const errorData = await response.json();
+      setError(errorData.message);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!fileData) {
@@ -35,8 +71,8 @@ export default function DashboardPage() {
       const data = await response.json();
 
       if (data.status == 200) {
+        handleGetAudio(data.summary);
         setSummaryData(data.summary);
-        setAudioUrl("/");
       } else {
         setError(data.message);
       }
@@ -58,24 +94,12 @@ export default function DashboardPage() {
       closeOnClick: true,
       pauseOnHover: true,
     });
+    setError("");
   }, [error]);
 
-  const handleFileUpload = async (acceptedFiles: File[]): Promise<void> => {
-    /**
-     * Handle file upload
-     * Accepted files is an array of files
-     * Get the first file from the array and set it to the fileData state
-     * Set the loading state to true
-     * Return
-     */
-
-    const file = acceptedFiles[0];
-
-    setFileData(file);
-    setLoading(true);
-
-    return;
-  };
+  useEffect(() => {
+    handleGetAudio();
+  }, []);
 
   if (loading) return <Loader />;
 

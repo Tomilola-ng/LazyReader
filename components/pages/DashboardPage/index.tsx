@@ -1,42 +1,44 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import FileInputArea from "./FileInputArea";
 import SummaryArea from "./SummaryArea";
 import Header from "@/components/Header";
-import Loader from "@/components/Reusables/Loader";
 import { useFileUpload } from "@/hooks/upload";
+import LoadingScreen from "./LoadingScreen";
 
 export default function DashboardPage() {
   const [fileData, setFileData] = useState<File>();
   const [summaryData, setSummaryData] = useState<string>("");
   const [audioUrl, setAudioUrl] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
   const { uploadFile } = useFileUpload();
 
+  // New states
+  const [isUploading, setIsUploading] = useState(false);
+  const [isComputing, setIsComputing] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const [uploadDone, setUploadDone] = useState(false);
+  const [computeDone, setComputeDone] = useState(false);
+  const [generateDone, setGenerateDone] = useState(false);
+
+  // File Upload Handler
   const handleFileUpload = async (acceptedFiles: File[]): Promise<void> => {
-    /**
-     * Handle file upload
-     * Accepted files is an array of files
-     * Get the first file from the array and set it to the fileData state
-     * Set the loading state to true
-     * Return
-     */
-
+    setIsUploading(true);
+    setUploadDone(false); // Reset the done state
     const file = acceptedFiles[0];
-
     setFileData(file);
-    setLoading(true);
-
-    return;
   };
 
+  // Get Audio Handler
   const handleGetAudio = async (summary?: string) => {
+    setIsComputing(true);
+    setComputeDone(false); // Reset the done state
     const formData = new FormData();
     formData.append("text", summary ?? summaryData);
 
@@ -49,9 +51,12 @@ export default function DashboardPage() {
       const blob = await response.blob();
       const audioUrl = URL.createObjectURL(blob);
       setAudioUrl(audioUrl);
+      setIsComputing(false);
+      setComputeDone(true); // Set done state
     } else {
       const errorData = await response.json();
       setError(errorData.message);
+      setIsComputing(false);
     }
   };
 
@@ -62,17 +67,23 @@ export default function DashboardPage() {
         return;
       }
 
-      const uploadResponse = await uploadFile(fileData)
+      const uploadResponse = await uploadFile(fileData);
 
       if (!uploadResponse || uploadResponse.file === undefined) {
         setError("Failed to upload file");
+        setIsUploading(false);
         return;
       }
+
+      setIsUploading(false);
+      setUploadDone(true); // Mark file upload as done
+      setIsGenerating(true);
+      setGenerateDone(false); // Reset the done state
 
       const response = await fetch("/api/summarize", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           file: {
@@ -85,14 +96,15 @@ export default function DashboardPage() {
 
       const data = await response.json();
 
-      if (data.status == 200) {
+      if (data.status === 200) {
         handleGetAudio(data.summary);
         setSummaryData(data.summary);
+        setIsGenerating(false);
+        setGenerateDone(true); // Mark generation as done
       } else {
         setError(data.message);
+        setIsGenerating(false);
       }
-
-      setLoading(false);
     };
 
     if (fileData) {
@@ -112,7 +124,19 @@ export default function DashboardPage() {
     setError("");
   }, [error]);
 
-  if (loading) return <Loader />;
+  // Conditional Rendering based on state
+  if (isUploading || isComputing || isGenerating) {
+    return (
+      <LoadingScreen
+        isUploading={isUploading}
+        isComputing={isComputing}
+        isGenerating={isGenerating}
+        uploadDone={uploadDone}
+        computeDone={computeDone}
+        generateDone={generateDone}
+      />
+    );
+  }
 
   return (
     <>

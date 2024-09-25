@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const response = await client.textToSpeech.convert("nPczCjzI2devNBz1zQrb", {
+    const response = await client.textToSpeech.convert("pMsXgVXv3BLzUgSXRplE", {
       optimize_streaming_latency: ElevenLabs.OptimizeStreamingLatency.Zero,
       output_format: ElevenLabs.OutputFormat.Mp32205032,
       text,

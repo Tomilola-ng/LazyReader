@@ -1,59 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { GoogleAIFileManager } from "@google/generative-ai/server";
-import fs from "fs";
-import path from "path";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-const fileManager = new GoogleAIFileManager(
-  process.env.GEMINI_API_KEY as string
-);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+async function fetchFileContent(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return await response.arrayBuffer();
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const contentType = req.headers.get("content-type") || "";
-    if (!contentType.includes("multipart/form-data")) {
+    const { file } = await req.json();
+
+    if (!file || !file.url) {
       return NextResponse.json(
-        { message: "Content-Type must be multipart/form-data" },
+        { message: "No file URL provided." },
         { status: 400 }
       );
     }
 
-    const formData = await req.formData();
-    const file = formData.get("file") as File;
+    // Fetch the file content
+    const fileContent = await fetchFileContent(file.url);
 
-    if (!file) {
-      return NextResponse.json({
-        message: "No file was uploaded.",
-        status: 400,
-      });
-    }
-
-    const filePath = path.join(process.cwd(), "tmp", file.name);
-
-    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    fs.writeFileSync(filePath, buffer);
-
-    const uploadResponse = await fileManager.uploadFile(filePath, {
-      mimeType: file.type,
-      displayName: file.name,
-    });
-
-    if (!uploadResponse.file) {
-      return NextResponse.json({
-        message: "Failed to upload file.",
-        status: 500,
-      });
-    }
+    // Convert ArrayBuffer to Uint8Array
+    const fileData = new Uint8Array(fileContent);
 
     const result = await model.generateContent([
       {
-        fileData: {
-          mimeType: uploadResponse.file.mimeType,
-          fileUri: uploadResponse.file.uri,
+        inlineData: {
+          mimeType: file.type || "application/pdf",
+          data: Buffer.from(fileData).toString('base64')
         },
       },
       { text: "Can you give a detailed summary of this ebook?" },
@@ -68,11 +48,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Remove the file after use
-    // fs.unlinkSync(filePath);
-
     return NextResponse.json({
       message: "File summarized successfully.",
+      file: {
+        key: file.key,
+        name: file.name,
+        url: file.url,
+      },
       summary,
       status: 200,
     });

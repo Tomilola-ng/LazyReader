@@ -9,6 +9,7 @@ import FileInputArea from "./FileInputArea";
 import SummaryArea from "./SummaryArea";
 import Header from "@/components/Header";
 import Loader from "@/components/Reusables/Loader";
+import { useFileUpload } from "@/hooks/upload";
 
 export default function DashboardPage() {
   const [fileData, setFileData] = useState<File>();
@@ -16,6 +17,7 @@ export default function DashboardPage() {
   const [audioUrl, setAudioUrl] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const { uploadFile } = useFileUpload();
 
   const handleFileUpload = async (acceptedFiles: File[]): Promise<void> => {
     /**
@@ -60,12 +62,25 @@ export default function DashboardPage() {
         return;
       }
 
-      const formData = new FormData();
-      formData.append("file", fileData);
+      const uploadResponse = await uploadFile(fileData)
+
+      if (!uploadResponse || uploadResponse.file === undefined) {
+        setError("Failed to upload file");
+        return;
+      }
 
       const response = await fetch("/api/summarize", {
         method: "POST",
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file: {
+            key: uploadResponse.file.key,
+            name: uploadResponse.file.name,
+            url: uploadResponse.file.url,
+          },
+        }),
       });
 
       const data = await response.json();

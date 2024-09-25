@@ -71,8 +71,15 @@ export default function DashboardPage() {
 
       const response = await fetch("/api/summarize", {
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
-          file: uploadResponse.file.url,
+          file: {
+            key: uploadResponse.file.key,
+            name: uploadResponse.file.name,
+            url: uploadResponse.file.url,
+          },
         }),
       });
 

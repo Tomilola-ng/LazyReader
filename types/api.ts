@@ -8,4 +8,15 @@ export interface _api {
           accessToken?: string;
         };
       };
+  upload: (file: File) => Promise<any>
+      | null
+      | {
+          message: string,
+          file: {
+            key: string,
+            name: string,
+            url: string
+          },
+          status: number
+        };
 }

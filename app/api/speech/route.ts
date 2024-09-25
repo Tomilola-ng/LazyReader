@@ -34,13 +34,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    console.log("Attempting to convert text to speech...");
-    console.log(
-      "API Key (first 4 characters):",
-      process.env.ELEVEN_LABS_API_KEY?.slice(0, 4)
-    );
-
-    const response = await client.textToSpeech.convert("pMsXgVXv3BLzUgSXRplE", {
+    const response = await client.textToSpeech.convert("nPczCjzI2devNBz1zQrb", {
       optimize_streaming_latency: ElevenLabs.OptimizeStreamingLatency.Zero,
       output_format: ElevenLabs.OutputFormat.Mp32205032,
       text,

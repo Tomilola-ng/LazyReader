@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { AlignLeftIcon } from "lucide-react";
 
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
 import MenuLink from "./MenuLink";
 import Logo from "../Reusables/Logo";
 import { _siteDetails } from "@/lib/config";
@@ -30,6 +32,13 @@ export default function Header() {
           {_siteDetails.menuLinks.map((item) => (
             <MenuLink key={item.link} {...item} />
           ))}
+
+          <SignedOut>
+            <MenuLink link="/dashboard" label="Login" />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </div>
 
         <div className="w-fit gap-x-4 hidden md:flexBetween">

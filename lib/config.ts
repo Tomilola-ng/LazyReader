@@ -5,6 +5,5 @@ export const _siteDetails = {
   menuLinks: [
     { label: "FAQs", link: "/faqs" },
     { label: "How it works", link: "/#how-it-works" },
-    { label: "Sign In", link: "/login", extra: true },
   ],
 };

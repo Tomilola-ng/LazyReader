@@ -1,4 +1,4 @@
-import LoginForm from "./LoginForm";
+import { SignIn } from "@clerk/nextjs";
 
 export default function LoginPage() {
   return (
@@ -7,7 +7,7 @@ export default function LoginPage() {
         Welcome to the future of reading
       </section>
       <section className="flexCenter h-full px-3 md:px-20">
-        <LoginForm />
+        <SignIn />
       </section>
     </main>
   );

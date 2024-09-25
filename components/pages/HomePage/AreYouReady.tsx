@@ -22,7 +22,7 @@ export default function AreYouReady() {
         </p>
       </div>
       <Gap height={4} />
-      <Link href={"/login"} className="linkButton">
+      <Link href={"/dashboard"} className="linkButton">
         <SparklesIcon size={14} />
         Get Started
       </Link>
